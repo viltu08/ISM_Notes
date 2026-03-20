@@ -3,137 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archive // Modules</title>
+    <title>ISM Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg: #ffffff;
-            --text: #1a1a1a;
-            --accent: #0055ff; /* A crisp blue for a technical feel */
-            --subtle: #f0f0f0;
-            --border: #e2e2e2;
+            --bg: #0a0e1a; /* Dark Midnight Blue */
+            --module-bg: #141b2d;
+            --text: #e0e0e0;
+            --accent: #4d94ff;
+            --border: #252d44;
+            --tag-bg: #1e293b;
         }
 
+        * { box-sizing: border-box; }
+
         body {
-            font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Public Sans', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         header {
-            padding: 20px 0 40px 0;
-            border-bottom: 1px solid var(--text);
-            margin-bottom: 30px;
+            padding: 30px 40px;
+            border-bottom: 1px solid var(--border);
         }
 
-        h1 { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; margin: 0; }
+        h1 { 
+            font-size: 1.5rem; 
+            font-weight: 900; 
+            letter-spacing: 0.1rem; 
+            margin: 0; 
+            text-transform: uppercase;
+        }
 
-        /* The Modular Grid */
-        .collection {
+        /* Layout Container */
+        .wrapper {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Main Feed */
+        main {
+            flex: 3;
             display: flex;
             flex-wrap: wrap;
-            gap: 20px; /* Space between modules */
-            align-items: flex-start;
+            gap: 15px;
+            align-content: flex-start;
         }
 
-        /* The Module Component */
+        /* Sidebar Nav */
+        nav#tag-sidebar {
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+            border-left: 1px solid var(--border);
+            padding-left: 20px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        nav h2 { font-size: 0.8rem; text-transform: uppercase; color: var(--accent); opacity: 0.8; }
+        
+        #tag-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-tag {
+            display: block;
+            padding: 5px 0;
+            font-size: 0.9rem;
+            color: var(--text);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-tag:hover { color: var(--accent); }
+
+        /* The Module */
         .module {
-            background: white;
+            background: var(--module-bg);
             border: 1px solid var(--border);
             padding: 20px;
-            flex: 1 1 300px; /* Grow, Shrink, Basis of 300px */
-            max-width: 450px;
+            flex: 1 1 300px;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
-            transition: border-color 0.2s ease;
+            transition: transform 0.2s, border-color 0.2s;
         }
 
-        .module:hover {
-            border-color: var(--accent);
-        }
+        .module.hidden { display: none; }
 
-        .module-meta {
+        .date {
             font-size: 0.7rem;
-            color: #888;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--accent);
         }
 
         .quote {
-            font-size: 0.95rem;
-            line-height: 1.4;
+            font-size: 1rem;
+            line-height: 1.5;
             margin: 0 0 15px 0;
-            padding-left: 10px;
-            border-left: 2px solid var(--subtle);
+            font-weight: 300;
         }
 
         .thought {
-            font-size: 0.9rem;
-            background-color: var(--subtle);
-            padding: 12px;
-            margin-top: auto; /* Pushes thought to the bottom */
-            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #b0b0b0;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+            font-style: italic;
         }
 
-        .tags {
+        .module-tags {
             margin-top: 15px;
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 5px;
         }
 
-        .tag {
-            font-size: 0.65rem;
-            font-weight: bold;
+        .tag-btn {
+            background: var(--tag-bg);
             color: var(--accent);
-            text-decoration: none;
-            border: 1px solid var(--accent);
-            padding: 2px 6px;
+            border: none;
+            font-size: 0.65rem;
+            padding: 3px 8px;
+            cursor: pointer;
+            text-transform: lowercase;
         }
 
-        /* Responsive adjustment for small screens */
-        @media (max-width: 600px) {
-            .module {
-                flex: 1 1 100%;
-                max-width: none;
-            }
+        /* Responsive */
+        @media (max-width: 900px) {
+            .wrapper { flex-direction: column; }
+            nav#tag-sidebar { border-left: none; border-bottom: 1px solid var(--border); padding-left: 0; padding-bottom: 20px; max-width: 100%; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Thinking Log / Knowledge Archive</h1>
+    <h1>ISM Notes</h1>
 </header>
 
-<main class="collection">
-    <article class="module">
-        <div class="module-meta">20 Mar 26 — E. Tufte</div>
-        <p class="quote">"To clarify add detail. Clutter and confusion are failures of design, not attributes of information."</p>
-        <div class="thought">
-            Minimalism is about hierarchy, not just removal. Organizing data so the eye knows where to rest.
-        </div>
-        <div class="tags">
-            <span class="tag">#HIERARCHY</span>
-            <span class="tag">#CLARITY</span>
-        </div>
-    </article>
+<div class="wrapper">
+    <main id="module-container">
+        <article class="module" data-tags="hierarchy,clarity">
+            <div class="date">MARCH 20, 2026</div>
+            <p class="quote">"To clarify add detail. Clutter and confusion are failures of design, not attributes of information."</p>
+            <div class="thought">Minimalism is about hierarchy, not just removal. Organizing data so the eye knows where to rest.</div>
+            <div class="module-tags">
+                <button class="tag-btn">#hierarchy</button>
+                <button class="tag-btn">#clarity</button>
+            </div>
+        </article>
 
-    <article class="module">
-        <div class="module-meta">21 Mar 26 — Are.na Concept</div>
-        <p class="quote">"Context is the engine of meaning."</p>
-        <div class="thought">
-            Connects to Tufte's idea—clutter happens when context is missing.
-        </div>
-        <div class="tags">
-            <span class="tag">#CONTEXT</span>
-            <span class="tag">#SYSTEMS</span>
-        </div>
-    </article>
-
+        <article class="module" data-tags="context,systems">
+            <div class="date">MARCH 21, 2026</div>
+            <p class="quote">"Context is the engine of meaning."</p>
+            <div class="thought">Data without context is noise. This aligns with standardizing visual languages.</div>
+            <div class="module-tags">
+                <button class="tag-btn">#context</button>
+                <button class="tag-btn">#systems</button>
+            </div>
+        </article>
     </main>
+
+    <nav id="tag-sidebar">
+        <h2>Index</h2>
+        <a class="nav-tag" onclick="filterModules('all')">View All</a>
+        <ul id="tag-list">
+            </ul>
+    </nav>
+</div>
+
+<script>
+    // 1. Function to filter modules
+    function filterModules(tag) {
+        const modules = document.querySelectorAll('.module');
+        modules.forEach(m => {
+            const tags = m.getAttribute('data-tags').split(',');
+            if (tag === 'all' || tags.includes(tag)) {
+                m.classList.remove('hidden');
+            } else {
+                m.classList.add('hidden');
+            }
+        });
+    }
+
+    // 2. Build the sidebar list automatically
+    function buildTagList() {
+        const modules = document.querySelectorAll('.module');
+        let allTags = new Set();
+
+        modules.forEach(m => {
+            const tags = m.getAttribute('data-tags').split(',');
+            tags.forEach(t => allTags.add(t.trim()));
+        });
+
+        const sortedTags = Array.from(allTags).sort();
+        const listContainer = document.getElementById('tag-list');
+
+        sortedTags.forEach(tag => {
+            const li = document.createElement('li');
+            li.innerHTML = `<a class="nav-tag" onclick="filterModules('${tag}')">#${tag}</a>`;
+            listContainer.appendChild(li);
+        });
+
+        // Make the tags inside cards clickable too
+        document.querySelectorAll('.tag-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tagValue = btn.innerText.replace('#', '');
+                filterModules(tagValue);
+            });
+        });
+    }
+
+    // Run on load
+    window.onload = buildTagList;
+</script>
 
 </body>
 </html>
