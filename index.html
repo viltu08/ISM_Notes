@@ -15,6 +15,7 @@
             --text-dim: #86868b;
             --border-ultra-soft: rgba(255, 255, 255, 0.1);
             
+            /* Full Category Palette Restored */
             --color-colors: #ff3b30;
             --color-maps: #34c759;
             --color-typography: #007aff;
@@ -23,7 +24,6 @@
             --color-generic: #8e8e93;
         }
 
-        /* --- Inversion Cursor --- */
         * { 
             box-sizing: border-box; 
             -webkit-font-smoothing: antialiased;
@@ -40,12 +40,11 @@
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
-            mix-blend-mode: difference; /* This creates the color reversal */
+            mix-blend-mode: difference;
             transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
             transform: translate(-50%, -50%);
         }
 
-        /* Cursor expands on interactive elements */
         body.hovering #custom-cursor {
             width: 60px;
             height: 60px;
@@ -159,18 +158,10 @@
 
         .footer-meta {
             display: flex;
-            align-items: center;
-            gap: 20px;
+            justify-content: space-between;
+            align-items: flex-end;
             padding-top: 20px;
             border-top: 1px solid var(--border-ultra-soft);
-        }
-
-        .source-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1rem;
-            color: var(--text-dim);
-            font-weight: 700;
         }
 
         .module-tags {
@@ -197,6 +188,25 @@
             margin-right: 8px;
         }
 
+        .source-group {
+            text-align: right;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+        }
+
+        .source-book {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .source-author {
+            font-size: 0.6rem;
+            font-weight: 400;
+            color: var(--text-dim);
+        }
+
         #grid-main:hover .module:not(:hover) { opacity: 0.3; }
 
         @media (max-width: 900px) {
@@ -205,6 +215,17 @@
             #custom-cursor { display: none; }
             * { cursor: auto; }
         }
+
+
+::selection {
+    background-color: var(--text-main);
+    color: var(--bg);
+}
+
+::-moz-selection {
+    background-color: var(--text-main);
+    color: var(--bg);
+}
     </style>
 </head>
 <body>
@@ -226,39 +247,19 @@
     </aside>
 
     <main id="grid-main">
-        <article class="module" data-tags="Typography, Generic">
-            <div class="thought">Typography is the physical weight of an idea expressed through structural silence.</div>
-            <p class="quote">"Typography is to writing as soundtracks are to movies."</p>
+        <article class="module" data-tags="Data Visualisation, Generic">
+            <div class="thought">Treat your pie and donut charts like a clock: starting the biggest slice at 12 o'clock gives people a natural place to start reading.</div>
+            <p class="quote">"When you arrange these slices of a pie chart, a good rule of thumb is to order them from largest to smallest, beginning at the 12:00 position."</p>
+            
             <div class="footer-meta">
                 <div class="module-tags">
-                    <span class="tag-dot" style="--dot-color: var(--color-typography)">Typography</span>
-                    <span class="tag-dot" style="--dot-color: var(--color-generic)">Generic</span>
-                </div>
-                <div class="source-label">Robert Bringhurst</div>
-            </div>
-        </article>
-
-        <article class="module" data-tags="Maps, Data Visualisation">
-            <div class="thought">Clarity is found in what we choose to remove, not what we choose to add.</div>
-            <p class="quote">"Simplicity is the ultimate sophistication in spatial data."</p>
-            <div class="footer-meta">
-                <div class="module-tags">
-                    <span class="tag-dot" style="--dot-color: var(--color-maps)">Maps</span>
                     <span class="tag-dot" style="--dot-color: var(--color-data)">Data Vis</span>
                 </div>
-                <div class="source-label">Cartographic Principles</div>
-            </div>
-        </article>
-
-        <article class="module" data-tags="Colors, Icon System">
-            <div class="thought">Functional color palettes reduce cognitive load by creating immediate visual categories.</div>
-            <p class="quote">"Color is relative and almost never seen as it physically is."</p>
-            <div class="footer-meta">
-                <div class="module-tags">
-                    <span class="tag-dot" style="--dot-color: var(--color-colors)">Colors</span>
-                    <span class="tag-dot" style="--dot-color: var(--color-icon)">Icon System</span>
+                
+                <div class="source-group">
+                    <div class="source-book">Better Data Visualizations</div>
+                    <div class="source-author">Jonathan Schwabish</div>
                 </div>
-                <div class="source-label">Josef Albers</div>
             </div>
         </article>
     </main>
@@ -311,9 +312,24 @@
         const tagIndex = document.getElementById('dynamic-tags');
         const counts = {};
 
+        // Define the full list of categories you want to always see
+        const allCategories = ['Colors', 'Maps', 'Typography', 'Data Visualisation', 'Icon System', 'Generic'];
+
+        // Initialize counts for all categories
+        allCategories.forEach(cat => counts[cat] = 0);
+
+        // Tally actual module tags
         modules.forEach(m => {
             const tags = m.getAttribute('data-tags').split(',').map(t => t.trim());
-            tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
+            tags.forEach(t => {
+                // Ensure variations like "Data Vis" count toward "Data Visualisation" if desired
+                let standardTag = t;
+                if(t === "Data Vis") standardTag = "Data Visualisation";
+                
+                if(counts.hasOwnProperty(standardTag)) {
+                    counts[standardTag]++;
+                }
+            });
         });
 
         document.getElementById('total-count').innerText = modules.length;
@@ -321,7 +337,7 @@
         Object.keys(counts).sort().forEach(tag => {
             const row = document.createElement('div');
             row.className = 'sidebar-item';
-            row.onclick = () => filterGrid(tag);
+            row.onclick = () => filterGrid(tag === "Data Visualisation" ? "Data" : tag);
             const dotColor = colorRegistry[tag.toLowerCase()] || '#fff';
             row.innerHTML = `<span><span class="tag-indicator" style="background: ${dotColor}"></span>#${tag}</span><span class="count-badge">${counts[tag]}</span>`;
             tagIndex.appendChild(row);
