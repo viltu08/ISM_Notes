@@ -53,11 +53,12 @@
         main { flex: 3; display: flex; flex-wrap: wrap; gap: 24px; align-content: flex-start; }
 
         /* Sidebar Index */
-        nav#tag-sidebar { flex: 1; min-width: 220px; position: sticky; top: 40px; height: fit-content; }
+        nav#tag-sidebar { flex: 1; min-width: 240px; position: sticky; top: 40px; height: fit-content; }
         nav h2 { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-dim); margin-bottom: 20px; border-bottom: 1px solid var(--border-soft); padding-bottom: 10px; }
         #tag-list { list-style: none; padding: 0; margin: 0; }
-        .nav-item { display: flex; justify-content: space-between; padding: 12px 0; font-size: 0.8rem; color: var(--text-dim); cursor: pointer; transition: 0.3s; }
+        .nav-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; font-size: 0.8rem; color: var(--text-dim); cursor: pointer; transition: 0.3s; border-bottom: 1px solid transparent; }
         .nav-item:hover { color: #fff; transform: translateX(5px); }
+        .count-badge { font-size: 0.65rem; font-weight: 800; opacity: 0.4; margin-left: 10px; }
 
         /* The Module */
         .module {
@@ -79,7 +80,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 1. THE THOUGHT (Highest Priority) */
+        /* 1. THE THOUGHT */
         .thought {
             font-size: 1.35rem;
             font-weight: 600;
@@ -99,7 +100,7 @@
             box-shadow: 0 0 10px var(--accent-color);
         }
 
-        /* 2. THE QUOTE (Supporting Role) */
+        /* 2. THE QUOTE */
         .quote {
             font-size: 0.95rem;
             line-height: 1.6;
@@ -109,7 +110,7 @@
             font-style: italic;
         }
 
-        /* 3. THE TAGS (Navigational) */
+        /* 3. THE TAGS */
         .module-tags {
             margin-top: auto;
             display: flex;
@@ -130,7 +131,7 @@
             letter-spacing: 0.05em;
         }
 
-        /* 4. THE SOURCE (Metadata) */
+        /* 4. THE SOURCE */
         .source-label {
             font-size: 0.6rem;
             font-weight: 400;
@@ -190,13 +191,13 @@
         <h2>Archive Index</h2>
         <div class="nav-item" onclick="filterModules('all')">
             <span>Show All</span>
+            <span class="count-badge" id="total-count">0</span>
         </div>
         <ul id="tag-list"></ul>
     </nav>
 </div>
 
 <script>
-    // COLOR REGISTRY - Update these to match your tags exactly
     const colorMap = {
         'colors': '#f87171',
         'maps': '#34d399',
@@ -223,7 +224,10 @@
 
     function initGarden() {
         const modules = document.querySelectorAll('.module');
-        const foundTags = new Set();
+        const tagCounts = {};
+        let totalModules = modules.length;
+
+        document.getElementById('total-count').innerText = totalModules;
 
         modules.forEach(m => {
             const tags = m.getAttribute('data-tags').split(',').map(t => t.trim());
@@ -234,26 +238,36 @@
                 m.style.setProperty('--accent-color', colorMap[firstTag]);
             }
 
-            // Style individual buttons inside card
+            // Style individual buttons inside card and count tags
             const buttons = m.querySelectorAll('.tag-btn');
             buttons.forEach(btn => {
-                const tName = btn.innerText.replace('#', '').trim().toLowerCase();
-                if (colorMap[tName]) btn.style.setProperty('--tag-color', colorMap[tName]);
+                const tName = btn.innerText.replace('#', '').trim();
+                const tLower = tName.toLowerCase();
+                
+                // Set button color
+                if (colorMap[tLower]) btn.style.setProperty('--tag-color', colorMap[tLower]);
+                
+                // Increment count
+                tagCounts[tName] = (tagCounts[tName] || 0) + 1;
+
                 btn.onclick = (e) => { e.stopPropagation(); filterModules(tName); };
             });
-
-            tags.forEach(t => foundTags.add(t));
         });
 
-        // Build Sidebar Index dynamically
+        // Build Sidebar Index dynamically with counters
         const listContainer = document.getElementById('tag-list');
-        listContainer.innerHTML = ""; // Clear
-        Array.from(foundTags).sort().forEach(tag => {
+        listContainer.innerHTML = ""; 
+        
+        Object.keys(tagCounts).sort().forEach(tag => {
             const color = colorMap[tag.toLowerCase()] || '#94a3b8';
+            const count = tagCounts[tag];
             const li = document.createElement('li');
             li.className = 'nav-item';
             li.onclick = () => filterModules(tag);
-            li.innerHTML = `<span><span style="color:${color}; margin-right:10px;">●</span>#${tag}</span>`;
+            li.innerHTML = `
+                <span><span style="color:${color}; margin-right:10px;">●</span>#${tag}</span>
+                <span class="count-badge">${count}</span>
+            `;
             listContainer.appendChild(li);
         });
     }
