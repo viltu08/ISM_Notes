@@ -3,163 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISM Notes</title>
+    <title>ISM Notes // Hierarchical Garden</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@200;400;600;800;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #0a0e1a; 
-            --module-bg: #111827;
-            --text: #e5e7eb;
-            --border: #1f2937;
-            --thought-bg: #161e2e;
-            --default-tag: #6b7280;
+            --bg-top: #0f172a;
+            --bg-bottom: #020617;
+            --module-bg: rgba(30, 41, 59, 0.4);
+            --text-main: #f8fafc;
+            --text-dim: #64748b;
+            --border-soft: rgba(255, 255, 255, 0.06);
+            --thought-bg: rgba(255, 255, 255, 0.03);
+            
+            /* Specific Tag Colors */
+            --color-colors: #f87171;
+            --color-maps: #34d399;
+            --color-typography: #60a5fa;
+            --color-data: #fbbf24;
+            --color-icon: #a78bfa;
+            --color-generic: #94a3b8;
         }
-
-        /* Color Palette for Tags */
-        .color-colors { --tag-color: #f87171; }           /* Soft Coral */
-        .color-maps { --tag-color: #34d399; }             /* Emerald */
-        .color-typography { --tag-color: #60a5fa; }       /* Sky Blue */
-        .color-data-visualisation { --tag-color: #fbbf24; } /* Amber */
-        .color-icon-system { --tag-color: #a78bfa; }      /* Soft Purple */
-        .color-generic { --tag-color: #94a3b8; }          /* Slate */
 
         * { box-sizing: border-box; }
-        body { font-family: 'Public Sans', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        header { padding: 40px; border-bottom: 1px solid var(--border); }
-        h1 { font-size: 1.2rem; font-weight: 900; letter-spacing: 0.2rem; margin: 0; text-transform: uppercase; color: #fff; }
 
-        .wrapper { display: flex; flex: 1; padding: 40px; gap: 40px; }
-        main { flex: 4; display: flex; flex-wrap: wrap; gap: 20px; align-content: flex-start; }
+        body {
+            font-family: 'Public Sans', sans-serif;
+            background: radial-gradient(circle at 50% -20%, var(--bg-top), var(--bg-bottom));
+            background-attachment: fixed;
+            color: var(--text-main);
+            margin: 0;
+            min-height: 100vh;
+        }
 
-        /* Sidebar */
+        header { padding: 60px 40px 20px 40px; }
+        h1 { font-size: 0.75rem; font-weight: 900; letter-spacing: 0.4rem; text-transform: uppercase; color: var(--text-dim); margin: 0; }
+
+        .wrapper {
+            display: flex;
+            padding: 20px 40px 80px 40px;
+            gap: 60px;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        main { flex: 3; display: flex; flex-wrap: wrap; gap: 24px; align-content: flex-start; }
+
+        /* Sidebar Index */
         nav#tag-sidebar { flex: 1; min-width: 220px; position: sticky; top: 40px; height: fit-content; }
-        nav h2 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7280; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        
-        .nav-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; font-size: 0.85rem; color: var(--text); text-decoration: none; cursor: pointer; transition: 0.2s; }
-        .nav-item:hover { color: #fff; }
-        .tag-indicator { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; display: inline-block; background-color: var(--tag-color, var(--default-tag)); }
+        nav h2 { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-dim); margin-bottom: 20px; border-bottom: 1px solid var(--border-soft); padding-bottom: 10px; }
+        #tag-list { list-style: none; padding: 0; margin: 0; }
+        .nav-item { display: flex; justify-content: space-between; padding: 12px 0; font-size: 0.8rem; color: var(--text-dim); cursor: pointer; transition: 0.3s; }
+        .nav-item:hover { color: #fff; transform: translateX(5px); }
 
-        /* Module */
-        .module { background: var(--module-bg); border: 1px solid var(--border); padding: 24px; flex: 1 1 320px; max-width: 450px; display: flex; flex-direction: column; }
-        .module.hidden { display: none; }
-
-        .source-name { font-size: 0.65rem; font-weight: 700; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7280; }
-        .quote { font-size: 1.05rem; line-height: 1.6; margin: 0 0 20px 0; font-weight: 300; color: #f3f4f6; }
-
-        .thought { 
-            font-size: 0.85rem; line-height: 1.5; color: #9ca3af; background: var(--thought-bg); 
-            padding: 15px; border-radius: 0 4px 4px 0; 
-            border-left: 3px solid var(--first-tag-color, #374151); 
-            margin-bottom: 20px; 
+        /* The Module */
+        .module {
+            background: var(--module-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-soft);
+            border-radius: 28px;
+            padding: 32px;
+            flex: 1 1 360px;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            animation: sprout 0.8s cubic-bezier(0.2, 1, 0.3, 1) both;
         }
 
-        .module-tags { margin-top: auto; display: flex; gap: 8px; flex-wrap: wrap; }
-        .tag-btn { 
-            background: transparent; 
-            color: var(--tag-color, var(--default-tag)); 
-            border: 1px solid var(--tag-color, #374151); 
-            font-size: 0.6rem; padding: 4px 8px; cursor: pointer; 
-            text-transform: uppercase; font-weight: 700; border-radius: 2px;
+        @keyframes sprout {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        @media (max-width: 1000px) { .wrapper { flex-direction: column-reverse; padding: 20px; } }
+        /* 1. THE THOUGHT (Highest Priority) */
+        .thought {
+            font-size: 1.35rem;
+            font-weight: 600;
+            line-height: 1.3;
+            color: #ffffff;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .thought::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 2px;
+            background: var(--accent-color, #475569);
+            margin-top: 15px;
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        /* 2. THE QUOTE (Supporting Role) */
+        .quote {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-weight: 200;
+            color: var(--text-dim);
+            margin: 0 0 25px 0;
+            font-style: italic;
+        }
+
+        /* 3. THE TAGS (Navigational) */
+        .module-tags {
+            margin-top: auto;
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tag-btn {
+            background: transparent;
+            color: var(--tag-color, var(--text-dim));
+            border: 1px solid var(--tag-color, var(--border-soft));
+            font-size: 0.6rem;
+            padding: 4px 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+            border-radius: 4px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+
+        /* 4. THE SOURCE (Metadata) */
+        .source-label {
+            font-size: 0.6rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #475569;
+        }
+
+        @media (max-width: 900px) {
+            .wrapper { flex-direction: column-reverse; padding: 20px; }
+            nav#tag-sidebar { width: 100%; margin-bottom: 40px; }
+        }
     </style>
 </head>
 <body>
 
-<header><h1>ISM Notes</h1></header>
+<header>
+    <h1>ISM Notes Archive</h1>
+</header>
 
 <div class="wrapper">
     <main id="module-container">
-        <article class="module" data-tags="typography,generic">
-            <div class="source-name">The Elements of Typographic Style</div>
-            <p class="quote">"Typography exists to honor content. It is a servant to the text, not a master."</p>
-            <div class="thought">Synthesis: Focus on legibility as the primary design constraint.</div>
+        
+        <article class="module" data-tags="Typography, Generic">
+            <div class="thought">Type is the invisible architecture of information design.</div>
+            <p class="quote">"Typography is to writing as soundtracks are to movies." — Robert Bringhurst</p>
             <div class="module-tags">
-                <button class="tag-btn color-typography">#typography</button>
-                <button class="tag-btn color-generic">#generic</button>
+                <button class="tag-btn">#Typography</button>
+                <button class="tag-btn">#Generic</button>
             </div>
+            <div class="source-label">The Elements of Typographic Style</div>
         </article>
 
-        <article class="module" data-tags="maps,data visualisation">
-            <div class="source-name">Cartographic Principles</div>
-            <p class="quote">"A map is not the territory; it is a reduction of complexity for the sake of utility."</p>
-            <div class="thought">This connects to how we categorize information—we lose detail to gain understanding.</div>
+        <article class="module" data-tags="Maps, Data Visualisation">
+            <div class="thought">Spatial clarity comes from intentional reduction, not raw detail.</div>
+            <p class="quote">"Simplicity is the ultimate sophistication in spatial data." — Cartographic Manual</p>
             <div class="module-tags">
-                <button class="tag-btn color-maps">#maps</button>
-                <button class="tag-btn color-data-visualisation">#data visualisation</button>
+                <button class="tag-btn">#Maps</button>
+                <button class="tag-btn">#Data Visualisation</button>
             </div>
+            <div class="source-label">Principles of Cartography</div>
         </article>
 
-        <article class="module" data-tags="colors">
-            <div class="source-name">Interaction Design</div>
-            <p class="quote">"Colors evoke emotion and provide functional feedback simultaneously."</p>
-            <div class="thought">Use color strictly as a functional tool in the ISM archive.</div>
+        <article class="module" data-tags="Colors, Icon System">
+            <div class="thought">Systemic color reduces the time between seeing and understanding.</div>
+            <p class="quote">"Color is almost never seen as it physically is." — Josef Albers</p>
             <div class="module-tags">
-                <button class="tag-btn color-colors">#colors</button>
+                <button class="tag-btn">#Colors</button>
+                <button class="tag-btn">#Icon System</button>
             </div>
+            <div class="source-label">Interaction of Color</div>
         </article>
+
     </main>
 
     <nav id="tag-sidebar">
-        <h2>Index</h2>
+        <h2>Archive Index</h2>
         <div class="nav-item" onclick="filterModules('all')">
-            <span><span class="tag-indicator"></span>Show All</span>
+            <span>Show All</span>
         </div>
         <ul id="tag-list"></ul>
     </nav>
 </div>
 
 <script>
-    // Configuration for tag colors (slug-friendly names)
-    const tagColorMap = {
-        'colors': 'color-colors',
-        'maps': 'color-maps',
-        'typography': 'color-typography',
-        'data visualisation': 'color-data-visualisation',
-        'icon system': 'color-icon-system',
-        'generic': 'color-generic'
+    // COLOR REGISTRY - Update these to match your tags exactly
+    const colorMap = {
+        'colors': '#f87171',
+        'maps': '#34d399',
+        'typography': '#60a5fa',
+        'data visualisation': '#fbbf24',
+        'icon system': '#a78bfa',
+        'generic': '#94a3b8'
     };
 
     function filterModules(tag) {
-        document.querySelectorAll('.module').forEach(m => {
-            const tags = m.getAttribute('data-tags').split(',').map(t => t.trim().toLowerCase());
-            (tag === 'all' || tags.includes(tag)) ? m.classList.remove('hidden') : m.classList.add('hidden');
+        const modules = document.querySelectorAll('.module');
+        modules.forEach(m => {
+            const mTags = m.getAttribute('data-tags').split(',').map(t => t.trim().toLowerCase());
+            if (tag === 'all' || mTags.includes(tag.toLowerCase())) {
+                m.style.display = 'flex';
+                m.style.animation = 'none';
+                m.offsetHeight; 
+                m.style.animation = null;
+            } else {
+                m.style.display = 'none';
+            }
         });
     }
 
-    function buildUI() {
+    function initGarden() {
         const modules = document.querySelectorAll('.module');
-        const tagCounts = {};
+        const foundTags = new Set();
 
         modules.forEach(m => {
-            const tags = m.getAttribute('data-tags').split(',').map(t => t.trim().toLowerCase());
+            const tags = m.getAttribute('data-tags').split(',').map(t => t.trim());
+            const firstTag = tags[0].toLowerCase();
             
-            // Apply the first tag's color to the "thought" border for elegance
-            if(tags.length > 0) {
-                const firstTagClass = tagColorMap[tags[0]];
-                m.querySelector('.thought').classList.add(firstTagClass);
-                m.querySelector('.thought').style.borderLeftColor = `var(--tag-color)`;
+            // Priority 1 Accent color
+            if (colorMap[firstTag]) {
+                m.style.setProperty('--accent-color', colorMap[firstTag]);
             }
 
-            tags.forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1);
+            // Style individual buttons inside card
+            const buttons = m.querySelectorAll('.tag-btn');
+            buttons.forEach(btn => {
+                const tName = btn.innerText.replace('#', '').trim().toLowerCase();
+                if (colorMap[tName]) btn.style.setProperty('--tag-color', colorMap[tName]);
+                btn.onclick = (e) => { e.stopPropagation(); filterModules(tName); };
+            });
+
+            tags.forEach(t => foundTags.add(t));
         });
 
+        // Build Sidebar Index dynamically
         const listContainer = document.getElementById('tag-list');
-        Object.keys(tagCounts).sort().forEach(tag => {
-            const colorClass = tagColorMap[tag] || '';
+        listContainer.innerHTML = ""; // Clear
+        Array.from(foundTags).sort().forEach(tag => {
+            const color = colorMap[tag.toLowerCase()] || '#94a3b8';
             const li = document.createElement('li');
-            li.className = `nav-item ${colorClass}`;
+            li.className = 'nav-item';
             li.onclick = () => filterModules(tag);
-            li.innerHTML = `<span><span class="tag-indicator"></span>#${tag}</span><span style="font-size:0.7rem; opacity:0.5">${tagCounts[tag]}</span>`;
+            li.innerHTML = `<span><span style="color:${color}; margin-right:10px;">●</span>#${tag}</span>`;
             listContainer.appendChild(li);
         });
     }
 
-    window.onload = buildUI;
+    window.onload = initGarden;
 </script>
+
 </body>
 </html>
