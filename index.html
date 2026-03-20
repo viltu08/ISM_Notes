@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Standards Manual Notes</title>
+    <style>
+        :root {
+            --bg: #f4f4f4;
+            --text: #1a1a1a;
+            --accent: #ff3e00;
+            --border: #d1d1d1;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        header {
+            max-width: 800px;
+            margin: 0 auto 80px auto;
+            border-bottom: 2px solid var(--text);
+            padding-bottom: 20px;
+        }
+
+        h1 { font-weight: 900; text-transform: uppercase; letter-spacing: -1px; margin: 0; }
+        
+        main { max-width: 800px; margin: 0 auto; }
+
+        /* The Note Component */
+        .entry {
+            margin-bottom: 100px;
+            display: grid;
+            grid-template-columns: 1fr;
+            border-left: 4px solid var(--accent);
+            padding-left: 20px;
+        }
+
+        .meta { font-size: 0.8rem; text-transform: uppercase; color: #666; margin-bottom: 10px; }
+
+        blockquote {
+            font-style: italic;
+            font-size: 1.2rem;
+            margin: 0 0 20px 0;
+            color: #444;
+        }
+
+        .synthesis {
+            font-weight: 500;
+            font-size: 1.1rem;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--text);
+            color: white;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            margin-right: 5px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Thinking Log: Info Design</h1>
+    <p>A repository of synthesized visual language principles.</p>
+</header>
+
+<main>
+    <article class="entry">
+        <div class="meta">March 20, 2026 — Edward Tufte, <i>Envisioning Information</i></div>
+        <blockquote>
+            "To clarify add detail. Clutter and confusion are failures of design, not attributes of information."
+        </blockquote>
+        <div class="synthesis">
+            <strong>My Thought:</strong> This suggests that "minimalism" isn't about removing data, but organizing it so the eye knows where to rest. It’s like an icon system where the weight of the lines dictates the hierarchy of the action.
+        </div>
+        <div class="tags" style="margin-top: 15px;">
+            <span class="tag">#Hierarchy</span>
+            <span class="tag">#Clarity</span>
+        </div>
+    </article>
+
+    </main>
+
+</body>
+</html>
