@@ -3,276 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISM Notes // Hierarchical Garden</title>
-    
+    <title>ISM Notes // Archive</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@200;400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@100;300;400;600;800;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-top: #0f172a;
-            --bg-bottom: #020617;
-            --module-bg: rgba(30, 41, 59, 0.4);
-            --text-main: #f8fafc;
-            --text-dim: #64748b;
-            --border-soft: rgba(255, 255, 255, 0.06);
-            --thought-bg: rgba(255, 255, 255, 0.03);
+            --bg: #000000;
+            --text-main: #f5f5f7;
+            --text-dim: #86868b;
+            --border-ultra-soft: rgba(255, 255, 255, 0.1);
             
-            /* Specific Tag Colors */
-            --color-colors: #f87171;
-            --color-maps: #34d399;
-            --color-typography: #60a5fa;
-            --color-data: #fbbf24;
-            --color-icon: #a78bfa;
-            --color-generic: #94a3b8;
+            --color-colors: #ff3b30;
+            --color-maps: #34c759;
+            --color-typography: #007aff;
+            --color-data: #ffcc00;
+            --color-icon: #af52de;
+            --color-generic: #8e8e93;
         }
 
-        * { box-sizing: border-box; }
-
+        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        
         body {
             font-family: 'Public Sans', sans-serif;
-            background: radial-gradient(circle at 50% -20%, var(--bg-top), var(--bg-bottom));
-            background-attachment: fixed;
+            background-color: var(--bg);
             color: var(--text-main);
             margin: 0;
-            min-height: 100vh;
+            line-height: 1.5;
         }
 
-        header { padding: 60px 40px 20px 40px; }
-        h1 { font-size: 0.75rem; font-weight: 900; letter-spacing: 0.4rem; text-transform: uppercase; color: var(--text-dim); margin: 0; }
+        header {
+            padding: 120px 40px 100px 40px;
+            text-align: center;
+        }
+
+        .site-title {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: 1.5rem;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin: 0;
+        }
 
         .wrapper {
-            display: flex;
-            padding: 20px 40px 80px 40px;
-            gap: 60px;
-            max-width: 1500px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 0 40px 150px 40px;
+            gap: 100px;
         }
 
-        main { flex: 3; display: flex; flex-wrap: wrap; gap: 24px; align-content: flex-start; }
+        #grid-sidebar {
+            position: sticky;
+            top: 60px;
+            height: fit-content;
+        }
 
-        /* Sidebar Index */
-        nav#tag-sidebar { flex: 1; min-width: 240px; position: sticky; top: 40px; height: fit-content; }
-        nav h2 { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-dim); margin-bottom: 20px; border-bottom: 1px solid var(--border-soft); padding-bottom: 10px; }
-        #tag-list { list-style: none; padding: 0; margin: 0; }
-        .nav-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; font-size: 0.8rem; color: var(--text-dim); cursor: pointer; transition: 0.3s; border-bottom: 1px solid transparent; }
-        .nav-item:hover { color: #fff; transform: translateX(5px); }
-        .count-badge { font-size: 0.65rem; font-weight: 800; opacity: 0.4; margin-left: 10px; }
+        .index-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+            color: var(--text-dim);
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
 
-        /* The Module */
-        .module {
-            background: var(--module-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-soft);
-            border-radius: 28px;
-            padding: 32px;
-            flex: 1 1 360px;
-            max-width: 500px;
+        .sidebar-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar-item:hover { color: #fff; }
+
+        .count-badge {
+            font-weight: 400;
+            font-variant-numeric: tabular-nums;
+            opacity: 0.6;
+        }
+
+        #grid-main {
             display: flex;
             flex-direction: column;
-            animation: sprout 0.8s cubic-bezier(0.2, 1, 0.3, 1) both;
+            gap: 120px;
         }
 
-        @keyframes sprout {
-            from { opacity: 0; transform: translateY(25px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 1. THE THOUGHT */
-        .thought {
-            font-size: 1.35rem;
-            font-weight: 600;
-            line-height: 1.3;
-            color: #ffffff;
-            margin-bottom: 20px;
+        .module {
+            width: 100%;
+            max-width: 800px;
             position: relative;
+            transition: opacity 0.4s ease;
         }
 
-        .thought::after {
-            content: '';
-            display: block;
-            width: 40px;
-            height: 2px;
-            background: var(--accent-color, #475569);
-            margin-top: 15px;
-            box-shadow: 0 0 10px var(--accent-color);
+        .thought {
+            font-size: 1.85rem;
+            font-weight: 600;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+            color: #ffffff;
+            margin-bottom: 24px;
         }
 
-        /* 2. THE QUOTE */
         .quote {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            font-weight: 200;
+            font-size: 1rem;
+            font-weight: 300;
             color: var(--text-dim);
-            margin: 0 0 25px 0;
-            font-style: italic;
+            line-height: 1.6;
+            margin: 0 0 30px 0;
+            max-width: 90%;
         }
 
-        /* 3. THE TAGS */
-        .module-tags {
-            margin-top: auto;
+        .footer-meta {
             display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
+            align-items: center;
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-ultra-soft);
         }
 
-        .tag-btn {
-            background: transparent;
-            color: var(--tag-color, var(--text-dim));
-            border: 1px solid var(--tag-color, var(--border-soft));
-            font-size: 0.6rem;
-            padding: 4px 10px;
-            cursor: pointer;
-            text-transform: uppercase;
-            border-radius: 4px;
-            font-weight: 800;
-            letter-spacing: 0.05em;
-        }
-
-        /* 4. THE SOURCE */
         .source-label {
-            font-size: 0.6rem;
-            font-weight: 400;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #475569;
+            letter-spacing: 0.1rem;
+            color: var(--text-dim);
+            font-weight: 700;
         }
+
+        .module-tags {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tag-dot {
+            display: flex;
+            align-items: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-main);
+        }
+
+        .tag-dot::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--dot-color, #fff);
+            margin-right: 8px;
+        }
+
+        #grid-main:hover .module:not(:hover) { opacity: 0.3; }
 
         @media (max-width: 900px) {
-            .wrapper { flex-direction: column-reverse; padding: 20px; }
-            nav#tag-sidebar { width: 100%; margin-bottom: 40px; }
+            .wrapper { grid-template-columns: 1fr; }
+            .thought { font-size: 1.6rem; }
+            #grid-sidebar { position: relative; top: 0; margin-bottom: 60px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>ISM Notes Archive</h1>
+    <h1 class="site-title">ISM Notes</h1>
 </header>
 
 <div class="wrapper">
-    <main id="module-container">
-        
-        <article class="module" data-tags="Typography, Generic">
-            <div class="thought">Type is the invisible architecture of information design.</div>
-            <p class="quote">"Typography is to writing as soundtracks are to movies." — Robert Bringhurst</p>
-            <div class="module-tags">
-                <button class="tag-btn">#Typography</button>
-                <button class="tag-btn">#Generic</button>
-            </div>
-            <div class="source-label">The Elements of Typographic Style</div>
-        </article>
-
-        <article class="module" data-tags="Maps, Data Visualisation">
-            <div class="thought">Spatial clarity comes from intentional reduction, not raw detail.</div>
-            <p class="quote">"Simplicity is the ultimate sophistication in spatial data." — Cartographic Manual</p>
-            <div class="module-tags">
-                <button class="tag-btn">#Maps</button>
-                <button class="tag-btn">#Data Visualisation</button>
-            </div>
-            <div class="source-label">Principles of Cartography</div>
-        </article>
-
-        <article class="module" data-tags="Colors, Icon System">
-            <div class="thought">Systemic color reduces the time between seeing and understanding.</div>
-            <p class="quote">"Color is almost never seen as it physically is." — Josef Albers</p>
-            <div class="module-tags">
-                <button class="tag-btn">#Colors</button>
-                <button class="tag-btn">#Icon System</button>
-            </div>
-            <div class="source-label">Interaction of Color</div>
-        </article>
-
-    </main>
-
-    <nav id="tag-sidebar">
-        <h2>Archive Index</h2>
-        <div class="nav-item" onclick="filterModules('all')">
+    <aside id="grid-sidebar">
+        <h2 class="index-title">Archive Index</h2>
+        <div class="sidebar-item" onclick="filterGrid('all')">
             <span>Show All</span>
             <span class="count-badge" id="total-count">0</span>
         </div>
-        <ul id="tag-list"></ul>
-    </nav>
+        <div id="dynamic-tags"></div>
+    </aside>
+
+    <main id="grid-main">
+        
+        <article class="module" data-tags="Typography, Generic">
+            <div class="thought">Typography is the physical weight of an idea expressed through structural silence.</div>
+            <p class="quote">"Typography is to writing as soundtracks are to movies."</p>
+            <div class="footer-meta">
+                <div class="module-tags">
+                    <span class="tag-dot" style="--dot-color: var(--color-typography)">Typography</span>
+                    <span class="tag-dot" style="--dot-color: var(--color-generic)">Generic</span>
+                </div>
+                <div class="source-label">Robert Bringhurst</div>
+            </div>
+        </article>
+
+        <article class="module" data-tags="Maps, Data Visualisation">
+            <div class="thought">Clarity is found in what we choose to remove, not what we choose to add.</div>
+            <p class="quote">"Simplicity is the ultimate sophistication in spatial data."</p>
+            <div class="footer-meta">
+                <div class="module-tags">
+                    <span class="tag-dot" style="--dot-color: var(--color-maps)">Maps</span>
+                    <span class="tag-dot" style="--dot-color: var(--color-data)">Data Vis</span>
+                </div>
+                <div class="source-label">Cartographic Principles</div>
+            </div>
+        </article>
+
+        <article class="module" data-tags="Colors, Icon System">
+            <div class="thought">Functional color palettes reduce cognitive load by creating immediate visual categories.</div>
+            <p class="quote">"Color is relative and almost never seen as it physically is."</p>
+            <div class="footer-meta">
+                <div class="module-tags">
+                    <span class="tag-dot" style="--dot-color: var(--color-colors)">Colors</span>
+                    <span class="tag-dot" style="--dot-color: var(--color-icon)">Icon System</span>
+                </div>
+                <div class="source-label">Josef Albers</div>
+            </div>
+        </article>
+
+    </main>
 </div>
 
 <script>
-    const colorMap = {
-        'colors': '#f87171',
-        'maps': '#34d399',
-        'typography': '#60a5fa',
-        'data visualisation': '#fbbf24',
-        'icon system': '#a78bfa',
-        'generic': '#94a3b8'
+    const colorRegistry = {
+        'colors': 'var(--color-colors)',
+        'maps': 'var(--color-maps)',
+        'typography': 'var(--color-typography)',
+        'data visualisation': 'var(--color-data)',
+        'data vis': 'var(--color-data)',
+        'icon system': 'var(--color-icon)',
+        'generic': 'var(--color-generic)'
     };
 
-    function filterModules(tag) {
+    function filterGrid(tag) {
         const modules = document.querySelectorAll('.module');
         modules.forEach(m => {
-            const mTags = m.getAttribute('data-tags').split(',').map(t => t.trim().toLowerCase());
+            const mTags = m.getAttribute('data-tags').toLowerCase();
             if (tag === 'all' || mTags.includes(tag.toLowerCase())) {
-                m.style.display = 'flex';
-                m.style.animation = 'none';
-                m.offsetHeight; 
-                m.style.animation = null;
+                m.style.display = 'block';
             } else {
                 m.style.display = 'none';
             }
         });
     }
 
-    function initGarden() {
+    function initArchive() {
         const modules = document.querySelectorAll('.module');
-        const tagCounts = {};
-        let totalModules = modules.length;
-
-        document.getElementById('total-count').innerText = totalModules;
+        const tagIndex = document.getElementById('dynamic-tags');
+        const counts = {};
 
         modules.forEach(m => {
             const tags = m.getAttribute('data-tags').split(',').map(t => t.trim());
-            const firstTag = tags[0].toLowerCase();
-            
-            // Priority 1 Accent color
-            if (colorMap[firstTag]) {
-                m.style.setProperty('--accent-color', colorMap[firstTag]);
-            }
-
-            // Style individual buttons inside card and count tags
-            const buttons = m.querySelectorAll('.tag-btn');
-            buttons.forEach(btn => {
-                const tName = btn.innerText.replace('#', '').trim();
-                const tLower = tName.toLowerCase();
-                
-                // Set button color
-                if (colorMap[tLower]) btn.style.setProperty('--tag-color', colorMap[tLower]);
-                
-                // Increment count
-                tagCounts[tName] = (tagCounts[tName] || 0) + 1;
-
-                btn.onclick = (e) => { e.stopPropagation(); filterModules(tName); };
-            });
+            tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
         });
 
-        // Build Sidebar Index dynamically with counters
-        const listContainer = document.getElementById('tag-list');
-        listContainer.innerHTML = ""; 
-        
-        Object.keys(tagCounts).sort().forEach(tag => {
-            const color = colorMap[tag.toLowerCase()] || '#94a3b8';
-            const count = tagCounts[tag];
-            const li = document.createElement('li');
-            li.className = 'nav-item';
-            li.onclick = () => filterModules(tag);
-            li.innerHTML = `
-                <span><span style="color:${color}; margin-right:10px;">●</span>#${tag}</span>
-                <span class="count-badge">${count}</span>
-            `;
-            listContainer.appendChild(li);
+        document.getElementById('total-count').innerText = modules.length;
+
+        Object.keys(counts).sort().forEach(tag => {
+            const row = document.createElement('div');
+            row.className = 'sidebar-item';
+            row.onclick = () => filterGrid(tag);
+            row.innerHTML = `<span>#${tag}</span> <span class="count-badge">${counts[tag]}</span>`;
+            tagIndex.appendChild(row);
         });
     }
 
-    window.onload = initGarden;
+    window.onload = initArchive;
 </script>
 
 </body>
