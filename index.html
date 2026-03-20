@@ -23,25 +23,54 @@
             --color-generic: #8e8e93;
         }
 
-        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        /* --- Inversion Cursor --- */
+        * { 
+            box-sizing: border-box; 
+            -webkit-font-smoothing: antialiased;
+            cursor: none; 
+        }
         
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference; /* This creates the color reversal */
+            transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Cursor expands on interactive elements */
+        body.hovering #custom-cursor {
+            width: 60px;
+            height: 60px;
+        }
+
         body {
             font-family: 'Public Sans', sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
             margin: 0;
             line-height: 1.5;
+            overflow-x: hidden;
         }
 
         header {
-            padding: 120px 40px 100px 40px;
-            text-align: center;
+            padding: 40px 40px 20px 40px;
+            text-align: left;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .site-title {
-            font-size: 3rem;
-            font-weight: 800;
-            letter-spacing: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 900;
+            letter-spacing: 0.3rem;
             text-transform: uppercase;
             color: #ffffff;
             margin: 0;
@@ -52,36 +81,44 @@
             grid-template-columns: 280px 1fr;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 40px 150px 40px;
+            padding: 20px 40px 100px 40px;
             gap: 100px;
         }
 
         #grid-sidebar {
             position: sticky;
-            top: 60px;
+            top: 40px;
             height: fit-content;
         }
 
         .index-title {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
-            letter-spacing: 0.2rem;
+            letter-spacing: 0.15rem;
             color: var(--text-dim);
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             font-weight: 600;
         }
 
         .sidebar-item {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
-            font-size: 0.85rem;
+            align-items: center;
+            padding: 10px 0;
+            font-size: 0.8rem;
             color: var(--text-dim);
-            cursor: pointer;
             transition: color 0.3s ease;
         }
 
         .sidebar-item:hover { color: #fff; }
+
+        .tag-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
 
         .count-badge {
             font-weight: 400;
@@ -92,7 +129,7 @@
         #grid-main {
             display: flex;
             flex-direction: column;
-            gap: 120px;
+            gap: 100px;
         }
 
         .module {
@@ -163,13 +200,16 @@
         #grid-main:hover .module:not(:hover) { opacity: 0.3; }
 
         @media (max-width: 900px) {
-            .wrapper { grid-template-columns: 1fr; }
-            .thought { font-size: 1.6rem; }
-            #grid-sidebar { position: relative; top: 0; margin-bottom: 60px; }
+            .wrapper { grid-template-columns: 1fr; gap: 40px; }
+            #grid-sidebar { position: relative; top: 0; margin-bottom: 40px; }
+            #custom-cursor { display: none; }
+            * { cursor: auto; }
         }
     </style>
 </head>
 <body>
+
+<div id="custom-cursor"></div>
 
 <header>
     <h1 class="site-title">ISM Notes</h1>
@@ -186,7 +226,6 @@
     </aside>
 
     <main id="grid-main">
-        
         <article class="module" data-tags="Typography, Generic">
             <div class="thought">Typography is the physical weight of an idea expressed through structural silence.</div>
             <p class="quote">"Typography is to writing as soundtracks are to movies."</p>
@@ -222,11 +261,29 @@
                 <div class="source-label">Josef Albers</div>
             </div>
         </article>
-
     </main>
 </div>
 
 <script>
+    const cursor = document.getElementById('custom-cursor');
+
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
+
+    document.addEventListener('mouseover', (e) => {
+        if (e.target.closest('.module') || e.target.closest('.sidebar-item')) {
+            document.body.classList.add('hovering');
+        }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+        if (e.target.closest('.module') || e.target.closest('.sidebar-item')) {
+            document.body.classList.remove('hovering');
+        }
+    });
+
     const colorRegistry = {
         'colors': 'var(--color-colors)',
         'maps': 'var(--color-maps)',
@@ -265,7 +322,8 @@
             const row = document.createElement('div');
             row.className = 'sidebar-item';
             row.onclick = () => filterGrid(tag);
-            row.innerHTML = `<span>#${tag}</span> <span class="count-badge">${counts[tag]}</span>`;
+            const dotColor = colorRegistry[tag.toLowerCase()] || '#fff';
+            row.innerHTML = `<span><span class="tag-indicator" style="background: ${dotColor}"></span>#${tag}</span><span class="count-badge">${counts[tag]}</span>`;
             tagIndex.appendChild(row);
         });
     }
