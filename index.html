@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISM Notes // Archive</title>
+    <title>ISM Archive // The Facade</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@100;300;400;600;800;900&display=swap" rel="stylesheet">
@@ -11,337 +11,262 @@
     <style>
         :root {
             --bg: #000000;
+            --brick-base: #b35a38; 
             --text-main: #f5f5f7;
             --text-dim: #86868b;
-            --border-ultra-soft: rgba(255, 255, 255, 0.1);
+            --border-soft: rgba(255, 255, 255, 0.1);
             
-            /* Full Category Palette Restored */
+            /* Official Tag Colors */
             --color-colors: #ff3b30;
             --color-maps: #34c759;
             --color-typography: #007aff;
             --color-data: #ffcc00;
             --color-icon: #af52de;
             --color-generic: #8e8e93;
+            
+            --mortar: 10px;
         }
 
-        * { 
-            box-sizing: border-box; 
-            -webkit-font-smoothing: antialiased;
-            cursor: none; 
-        }
-        
-        #custom-cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 30px;
-            height: 30px;
-            background-color: white;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: difference;
-            transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
-            transform: translate(-50%, -50%);
-        }
-
-        body.hovering #custom-cursor {
-            width: 60px;
-            height: 60px;
-        }
-
+        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; cursor: none; }
         body {
             font-family: 'Public Sans', sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
             margin: 0;
-            line-height: 1.5;
             overflow-x: hidden;
         }
 
+        /* --- Custom Cursor --- */
+        #custom-cursor {
+            position: fixed; top: 0; left: 0;
+            width: 20px; height: 20px;
+            background-color: white; border-radius: 50%;
+            pointer-events: none; z-index: 100000;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease-out, width 0.3s, height 0.3s;
+            transform: translate(-50%, -50%);
+        }
+        body.hovering #custom-cursor { width: 50px; height: 50px; }
+
+        /* --- Header --- */
         header {
-            padding: 40px 40px 20px 40px;
-            text-align: left;
-            max-width: 1400px;
-            margin: 0 auto;
+            padding: 60px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 100vw; position: relative; z-index: 100;
         }
-
-        .site-title {
-            font-size: 0.9rem;
-            font-weight: 900;
-            letter-spacing: 0.3rem;
-            text-transform: uppercase;
-            color: #ffffff;
-            margin: 0;
+        .site-title { 
+            font-size: 0.8rem; font-weight: 900; letter-spacing: 0.3rem; 
+            text-transform: uppercase; text-decoration: none; color: inherit; 
         }
-
-        .wrapper {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px 40px 100px 40px;
-            gap: 100px;
+        .view-toggle {
+            display: flex; gap: 25px;
+            font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1rem;
         }
+        .toggle-btn { opacity: 0.3; transition: 0.3s; border-bottom: 2px solid transparent; padding-bottom: 5px; }
+        .toggle-btn.active { opacity: 1; border-bottom: 2px solid white; }
 
+        /* --- Sidebar (Restored Index + Counters) --- */
         #grid-sidebar {
-            position: sticky;
-            top: 40px;
-            height: fit-content;
+            position: fixed; left: 40px; top: 160px; width: 240px; z-index: 90;
+        }
+        .index-title { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.15rem; color: var(--text-dim); margin-bottom: 25px; }
+        .sidebar-item { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; font-size: 0.75rem; color: var(--text-dim); transition: 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .sidebar-item:hover { color: white; }
+        .tag-label-group { display: flex; align-items: center; }
+        .tag-indicator { width: 8px; height: 8px; border-radius: 50%; margin-right: 12px; }
+        .count-badge { font-variant-numeric: tabular-nums; opacity: 0.4; font-weight: 300; }
+
+        /* --- Layout --- */
+        main { margin-left: 320px; padding: 0 40px 100px 0; transition: margin 0.4s ease; }
+
+        /* --- GRID MODES --- */
+        #grid-main.facade-mode { display: flex; flex-wrap: wrap; gap: var(--mortar); width: 100%; }
+        
+        .module { 
+            height: 90px; background-color: var(--brick-base); border-radius: 1px;
+            transition: filter 0.3s ease, opacity 0.4s ease;
         }
 
-        .index-title {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15rem;
-            color: var(--text-dim);
-            margin-bottom: 30px;
-            font-weight: 600;
+        /* Responsive Bricks & Stagger */
+        @media (min-width: 1200px) {
+            .module { flex: 0 0 calc(16.66% - var(--mortar)); }
+            #grid-main.facade-mode .module:nth-child(12n+7) { margin-left: calc(8.33% + 5px); }
         }
-
-        .sidebar-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            font-size: 0.8rem;
-            color: var(--text-dim);
-            transition: color 0.3s ease;
+        @media (max-width: 1199px) and (min-width: 768px) {
+            .module { flex: 0 0 calc(25% - var(--mortar)); }
+            #grid-main.facade-mode .module:nth-child(8n+5) { margin-left: calc(12.5% + 5px); }
         }
-
-        .sidebar-item:hover { color: #fff; }
-
-        .tag-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .count-badge {
-            font-weight: 400;
-            font-variant-numeric: tabular-nums;
-            opacity: 0.6;
-        }
-
-        #grid-main {
-            display: flex;
-            flex-direction: column;
-            gap: 100px;
-        }
-
-        .module {
-            width: 100%;
-            max-width: 800px;
-            position: relative;
-            transition: opacity 0.4s ease;
-        }
-
-        .thought {
-            font-size: 1.85rem;
-            font-weight: 600;
-            line-height: 1.25;
-            letter-spacing: -0.01em;
-            color: #ffffff;
-            margin-bottom: 24px;
-        }
-
-        .quote {
-            font-size: 1rem;
-            font-weight: 300;
-            color: var(--text-dim);
-            line-height: 1.6;
-            margin: 0 0 30px 0;
-            max-width: 90%;
-        }
-
-        .footer-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-ultra-soft);
-        }
-
-        .module-tags {
-            display: flex;
-            gap: 10px;
-        }
-
-        .tag-dot {
-            display: flex;
-            align-items: center;
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-main);
-        }
-
-        .tag-dot::before {
-            content: '';
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--dot-color, #fff);
-            margin-right: 8px;
-        }
-
-        .source-group {
-            text-align: right;
-            text-transform: uppercase;
-            letter-spacing: 0.1rem;
-        }
-
-        .source-book {
-            font-size: 0.65rem;
-            font-weight: 800;
-            color: var(--text-main);
-            margin-bottom: 4px;
-        }
-
-        .source-author {
-            font-size: 0.6rem;
-            font-weight: 400;
-            color: var(--text-dim);
-        }
-
-        #grid-main:hover .module:not(:hover) { opacity: 0.3; }
-
-        @media (max-width: 900px) {
-            .wrapper { grid-template-columns: 1fr; gap: 40px; }
-            #grid-sidebar { position: relative; top: 0; margin-bottom: 40px; }
+        @media (max-width: 767px) {
+            main { margin-left: 0; padding: 0 20px 100px 20px; }
+            #grid-sidebar { position: relative; left: 0; top: 0; width: 100%; padding: 0 20px 40px 20px; }
+            .module { flex: 0 0 calc(50% - var(--mortar)); height: 65px; }
+            #grid-main.facade-mode .module:nth-child(4n+3) { margin-left: calc(25% + 5px); }
+            header { padding: 40px 20px; flex-direction: column; align-items: flex-start; gap: 20px; }
             #custom-cursor { display: none; }
             * { cursor: auto; }
         }
 
+        /* Color Coding */
+        .module[data-tag="Data Visualisation"] { background-color: var(--color-data); }
+        .module[data-tag="Maps"] { background-color: var(--color-maps); }
+        .module[data-tag="Typography"] { background-color: var(--color-typography); }
 
-::selection {
-    background-color: var(--text-main);
-    color: var(--bg);
-}
+        /* --- THE MASTER OVERLAY (NO CLIPPING) --- */
+        #master-overlay {
+            display: none; position: fixed;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: calc(100vw - 40px); max-width: 700px; max-height: 85vh;
+            background: #0d0d0d; border: 1px solid var(--border-soft);
+            z-index: 99999; box-shadow: 0 80px 160px rgba(0,0,0,0.9);
+            padding: clamp(30px, 8vw, 60px); overflow-y: auto;
+            pointer-events: none;
+        }
 
-::-moz-selection {
-    background-color: var(--text-main);
-    color: var(--bg);
-}
+        /* Interior Detail Restored */
+        .thought { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 600; line-height: 1.2; color: #fff; margin-bottom: 25px; }
+        .quote { font-size: 0.95rem; color: var(--text-dim); line-height: 1.7; font-weight: 300; margin-bottom: 40px; }
+        .footer-meta {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            padding-top: 30px; border-top: 1px solid var(--border-soft);
+        }
+        .tag-dot { display: flex; align-items: center; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; }
+        .tag-dot::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--dot-color, #fff); margin-right: 12px; }
+        .source-book { font-size: 0.75rem; font-weight: 900; color: #fff; text-transform: uppercase; letter-spacing: 0.1rem; }
+        .source-author { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; margin-top: 4px; }
+
+        /* Expanded Mode Restored */
+        #grid-main.expanded-mode { display: flex; flex-direction: column; gap: 120px; padding-top: 40px; }
+        .expanded-mode .module { flex: none; width: 100%; height: auto; background: none !important; margin-left: 0 !important; }
+        .expanded-mode .module-content-wrapper { display: block; width: 100%; max-width: 800px; border-bottom: 1px solid var(--border-soft); padding-bottom: 60px; }
     </style>
 </head>
 <body>
 
 <div id="custom-cursor"></div>
+<div id="master-overlay"></div>
 
 <header>
-    <h1 class="site-title">ISM Notes</h1>
+    <a href="/" class="site-title">ISM Archive</a>
+    <div class="view-toggle">
+        <span class="toggle-btn active" id="btn-facade" onclick="setView('facade')">Facade</span>
+        <span class="toggle-btn" id="btn-expanded" onclick="setView('expanded')">Expanded</span>
+    </div>
 </header>
 
-<div class="wrapper">
-    <aside id="grid-sidebar">
-        <h2 class="index-title">Archive Index</h2>
-        <div class="sidebar-item" onclick="filterGrid('all')">
-            <span>Show All</span>
-            <span class="count-badge" id="total-count">0</span>
-        </div>
-        <div id="dynamic-tags"></div>
-    </aside>
+<aside id="grid-sidebar">
+    <h2 class="index-title">Archive Index</h2>
+    <div class="sidebar-item" onclick="filterGrid('all')">
+        <div class="tag-label-group">Show All</div>
+        <span class="count-badge" id="total-count">0</span>
+    </div>
+    <div id="dynamic-tags"></div>
+</aside>
 
-    <main id="grid-main">
-        <article class="module" data-tags="Data Visualisation, Generic">
-            <div class="thought">Treat your pie and donut charts like a clock: starting the biggest slice at 12 o'clock gives people a natural place to start reading.</div>
-            <p class="quote">"When you arrange these slices of a pie chart, a good rule of thumb is to order them from largest to smallest, beginning at the 12:00 position."</p>
-            
-            <div class="footer-meta">
-                <div class="module-tags">
-                    <span class="tag-dot" style="--dot-color: var(--color-data)">Data Vis</span>
+<main>
+    <div id="grid-main" class="facade-mode">
+        <article class="module" data-tag="Data Visualisation">
+            <template class="module-template">
+                <div class="module-content-wrapper">
+                    <div class="thought">Treat your pie chart like a clock: anchor the biggest slice at 12 o'clock for intuitive legibility.</div>
+                    <p class="quote">"When you arrange these slices of a pie chart, a good rule of thumb is to order them from largest to smallest, beginning at the 12:00 position."</p>
+                    <div class="footer-meta">
+                        <div class="tag-dot" style="--dot-color: var(--color-data)">Data Vis</div>
+                        <div style="text-align:right">
+                            <div class="source-book">Better Data Visualizations</div>
+                            <div class="source-author">Jonathan Schwabish</div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="source-group">
-                    <div class="source-book">Better Data Visualizations</div>
-                    <div class="source-author">Jonathan Schwabish</div>
-                </div>
-            </div>
+            </template>
         </article>
-    </main>
-</div>
+
+        <script>
+            const tags = ['Maps', 'Typography', 'Generic', 'Generic', 'Generic', 'Generic', 'Generic', 'Generic', 'Generic', 'Generic', 'Generic', 'Generic', 'Generic', 'Generic', 'Generic', 'Generic'];
+            tags.forEach(t => document.write(`<article class="module" data-tag="${t}"></article>`));
+        </script>
+    </div>
+</main>
 
 <script>
     const cursor = document.getElementById('custom-cursor');
+    const overlay = document.getElementById('master-overlay');
+    const grid = document.getElementById('grid-main');
 
+    // Cursor Tracking
     document.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
     });
 
-    document.addEventListener('mouseover', (e) => {
-        if (e.target.closest('.module') || e.target.closest('.sidebar-item')) {
-            document.body.classList.add('hovering');
-        }
-    });
+    // Hover Teleport Logic
+    function setupHovers() {
+        document.querySelectorAll('.module').forEach(brick => {
+            brick.addEventListener('mouseenter', () => {
+                document.body.classList.add('hovering');
+                if (grid.classList.contains('facade-mode')) {
+                    const temp = brick.querySelector('.module-template');
+                    if(temp) {
+                        overlay.innerHTML = temp.innerHTML;
+                        overlay.style.display = 'block';
+                    }
+                }
+            });
+            brick.addEventListener('mouseleave', () => {
+                document.body.classList.remove('hovering');
+                overlay.style.display = 'none';
+            });
+        });
+    }
 
-    document.addEventListener('mouseout', (e) => {
-        if (e.target.closest('.module') || e.target.closest('.sidebar-item')) {
-            document.body.classList.remove('hovering');
+    function setView(view) {
+        grid.className = view + '-mode';
+        document.getElementById('btn-facade').classList.toggle('active', view === 'facade');
+        document.getElementById('btn-expanded').classList.toggle('active', view === 'expanded');
+        
+        if (view === 'expanded') {
+            overlay.style.display = 'none';
+            document.querySelectorAll('.module').forEach(m => {
+                const temp = m.querySelector('.module-template');
+                if(temp && !m.querySelector('.module-content-wrapper')) {
+                    m.innerHTML += temp.innerHTML;
+                }
+            });
         }
-    });
-
-    const colorRegistry = {
-        'colors': 'var(--color-colors)',
-        'maps': 'var(--color-maps)',
-        'typography': 'var(--color-typography)',
-        'data visualisation': 'var(--color-data)',
-        'data vis': 'var(--color-data)',
-        'icon system': 'var(--color-icon)',
-        'generic': 'var(--color-generic)'
-    };
+    }
 
     function filterGrid(tag) {
-        const modules = document.querySelectorAll('.module');
-        modules.forEach(m => {
-            const mTags = m.getAttribute('data-tags').toLowerCase();
-            if (tag === 'all' || mTags.includes(tag.toLowerCase())) {
-                m.style.display = 'block';
-            } else {
-                m.style.display = 'none';
-            }
+        document.querySelectorAll('.module').forEach(m => {
+            const mTag = m.getAttribute('data-tag').toLowerCase();
+            m.style.opacity = (tag === 'all' || mTag.includes(tag.toLowerCase())) ? '1' : '0.1';
         });
     }
 
     function initArchive() {
+        const sidebar = document.getElementById('dynamic-tags');
         const modules = document.querySelectorAll('.module');
-        const tagIndex = document.getElementById('dynamic-tags');
+        const categories = ['Colors', 'Maps', 'Typography', 'Data Visualisation', 'Icon System', 'Generic'];
+        const colors = { 'colors':'#ff3b30', 'maps':'#34c759', 'typography':'#007aff', 'data visualisation':'#ffcc00', 'icon system':'#af52de', 'generic':'#8e8e93' };
+        
         const counts = {};
-
-        // Define the full list of categories you want to always see
-        const allCategories = ['Colors', 'Maps', 'Typography', 'Data Visualisation', 'Icon System', 'Generic'];
-
-        // Initialize counts for all categories
-        allCategories.forEach(cat => counts[cat] = 0);
-
-        // Tally actual module tags
+        categories.forEach(cat => counts[cat] = 0);
         modules.forEach(m => {
-            const tags = m.getAttribute('data-tags').split(',').map(t => t.trim());
-            tags.forEach(t => {
-                // Ensure variations like "Data Vis" count toward "Data Visualisation" if desired
-                let standardTag = t;
-                if(t === "Data Vis") standardTag = "Data Visualisation";
-                
-                if(counts.hasOwnProperty(standardTag)) {
-                    counts[standardTag]++;
-                }
-            });
+            const tag = m.getAttribute('data-tag');
+            if(counts.hasOwnProperty(tag)) counts[tag]++;
         });
 
         document.getElementById('total-count').innerText = modules.length;
-
-        Object.keys(counts).sort().forEach(tag => {
+        categories.sort().forEach(t => {
             const row = document.createElement('div');
             row.className = 'sidebar-item';
-            row.onclick = () => filterGrid(tag === "Data Visualisation" ? "Data" : tag);
-            const dotColor = colorRegistry[tag.toLowerCase()] || '#fff';
-            row.innerHTML = `<span><span class="tag-indicator" style="background: ${dotColor}"></span>#${tag}</span><span class="count-badge">${counts[tag]}</span>`;
-            tagIndex.appendChild(row);
+            row.onclick = () => filterGrid(t);
+            row.innerHTML = `<div class="tag-label-group"><span class="tag-indicator" style="background:${colors[t.toLowerCase()]}"></span><span>#${t}</span></div><span class="count-badge">${counts[t]}</span>`;
+            sidebar.appendChild(row);
         });
+        setupHovers();
     }
 
     window.onload = initArchive;
